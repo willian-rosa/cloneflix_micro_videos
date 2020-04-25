@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Models;
 
 use App\Models\Category;
 use App\Models\Traits\Uuid;
@@ -9,17 +9,21 @@ use PHPUnit\Framework\TestCase;
 
 class CategoryTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
+
+    private $category;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->category = new Category();
+
+    }
+
     public function testFillable()
     {
         $fillble = ['name', 'description', 'is_active'];
-        $category = new Category();
-
-        $this->assertEquals($fillble, $category->getFillable());
+        $this->assertEquals($fillble, $this->category->getFillable());
 
     }
 
@@ -38,7 +42,7 @@ class CategoryTest extends TestCase
 
     public function testCasts()
     {
-        $casts = ['id' => 'string'];
+        $casts = ['id' => 'string', 'is_active' => 'boolean'];
 
         $category = new Category();
 
@@ -48,11 +52,7 @@ class CategoryTest extends TestCase
 
     public function testIncrementingAt()
     {
-
-        $category = new Category();
-
-        $this->assertFalse($category->getIncrementing());
-
+        $this->assertFalse($this->category->getIncrementing());
     }
 
     public function testDates()
@@ -60,14 +60,10 @@ class CategoryTest extends TestCase
 
         $dates = ['deleted_at', 'created_at', 'updated_at'];
 
-        $category = new Category();
+        $this->assertCount(count($dates), $this->category->getDates());
 
-        $this->assertCount(count($dates), $category->getDates());
-
-        foreach ($dates as $date){
-            $this->assertContains($date, $category->getDates());
-        }
-
+        $this->assertEqualsCanonicalizing($dates, $this->category->getDates());
 
     }
+
 }
