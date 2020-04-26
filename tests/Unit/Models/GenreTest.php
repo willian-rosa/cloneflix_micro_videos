@@ -3,27 +3,28 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Category;
+use App\Models\Genre;
 use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use PHPUnit\Framework\TestCase;
 
-class CategoryTest extends TestCase
+class GenreTest extends TestCase
 {
 
-    private $category;
+    private $genre;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->category = new Category();
+        $this->genre = new Genre();
 
     }
 
     public function testFillable()
     {
-        $fillble = ['name', 'description', 'is_active'];
-        $this->assertEquals($fillble, $this->category->getFillable());
+        $fillble = ['name', 'is_active'];
+        $this->assertEquals($fillble, $this->genre->getFillable());
 
     }
 
@@ -33,7 +34,9 @@ class CategoryTest extends TestCase
             SoftDeletes::class,
             Uuid::class
         ];
+
         $categoryTraits = array_keys(class_uses(Category::class));
+
         $this->assertEquals($traits, $categoryTraits);
 
     }
@@ -41,12 +44,14 @@ class CategoryTest extends TestCase
     public function testCasts()
     {
         $casts = ['id' => 'string', 'is_active' => 'boolean'];
-        $this->assertEquals($casts, $this->category->getCasts());
+
+        $this->assertEquals($casts, $this->genre->getCasts());
+
     }
 
     public function testIncrementingAt()
     {
-        $this->assertFalse($this->category->getIncrementing());
+        $this->assertFalse($this->genre->getIncrementing());
     }
 
     public function testDates()
@@ -54,9 +59,9 @@ class CategoryTest extends TestCase
 
         $dates = ['deleted_at', 'created_at', 'updated_at'];
 
-        $this->assertCount(count($dates), $this->category->getDates());
+        $this->assertCount(count($dates), $this->genre->getDates());
 
-        $this->assertEqualsCanonicalizing($dates, $this->category->getDates());
+        $this->assertEqualsCanonicalizing($dates, $this->genre->getDates());
 
     }
 
