@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Genre;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 
-class GenreController extends Controller
+class GenreController extends BasicCrudController
 {
 
     private $rules = [
@@ -16,58 +12,19 @@ class GenreController extends Controller
         'is_active' => 'boolean'
     ];
 
-    /**
-     * @return Genre[]
-     */
-    public function index()
+    protected function model()
     {
-        return Genre::all();
+        return Genre::class;
     }
 
-    /**
-     * @param Request $request
-     * @return mixed
-     * @throws ValidationException
-     */
-    public function store(Request $request)
+    protected function rulesStore(): array
     {
-        $this->validate($request, $this->rules);
-        $genre = Genre::create($request->all());
-        $genre->refresh();
-        return $genre;
+        return $this->rules;
     }
 
-    /**
-     * @param Genre $genre
-     * @return Genre
-     */
-    public function show(Genre $genre)
+    protected function rulesUpdate(): array
     {
-        return $genre;
+        return $this->rules;
     }
 
-
-    /**
-     * @param Request $request
-     * @param Genre $genre
-     * @return Genre
-     * @throws ValidationException
-     */
-    public function update(Request $request, Genre $genre)
-    {
-        $this->validate($request, $this->rules);
-        $genre->update($request->all());
-        return $genre;
-    }
-
-    /**
-     * @param Genre $genre
-     * @return Response
-     * @throws \Exception
-     */
-    public function destroy(Genre $genre)
-    {
-        $genre->delete();
-        return response()->noContent();
-    }
 }

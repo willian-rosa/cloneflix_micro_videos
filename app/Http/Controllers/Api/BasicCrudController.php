@@ -14,6 +14,7 @@ abstract class BasicCrudController extends Controller
     abstract protected function model();
 
     abstract protected function rulesStore(): array;
+    abstract protected function rulesUpdate(): array;
 
     public function index()
     {
@@ -22,43 +23,38 @@ abstract class BasicCrudController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, $this->rulesStore());
+        $validateData = $this->validate($request, $this->rulesStore());
+        $obj = $this->model()::create($validateData);
+        $obj->refresh();
+        return $obj;
     }
 
-//    /**
-//     * @param Request $request
-//     * @return mixed
-//     * @throws \Illuminate\Validation\ValidationException
-//     */
-//    public function store(Request $request)
-//    {
-//        $this->validate($request, $this->rules);
-//        $category = Category::create($request->all());
-//        $category->refresh();
-//        return $category;
-//    }
-//
-//    public function show(Category $category)
-//    {
-//        return $category;
-//    }
-//
-//    /**
-//     * @param Request $request
-//     * @param Category $category
-//     * @return bool
-//     * @throws \Illuminate\Validation\ValidationException
-//     */
-//    public function update(Request $request, Category $category)
-//    {
-//        $this->validate($request, $this->rules);
-//        $category->update($request->all());
-//        return $category;
-//    }
-//
-//    public function destroy(Category $category)
-//    {
-//        $category->delete();
-//        return response()->noContent();
-//    }
+    public function show($id)
+    {
+        return $this->findOrFail($id);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validateData = $this->validate($request, $this->rulesUpdate());
+        $obj = $this->findOrFail($id);
+        $obj->update($validateData);
+        $obj->refresh();
+        return $obj;
+    }
+
+    public function destroy($id)
+    {
+        $obj = $this->findOrFail($id);
+        $obj->delete();
+        return response()->noContent();
+    }
+
+
+    protected function findOrFail($id)
+    {
+        $model = $this->model();
+        $keyName = (new $model)->getRouteKeyName();
+        return $model::where($keyName, $id)->firstOrFail();
+    }
 }
