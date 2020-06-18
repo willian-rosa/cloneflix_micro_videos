@@ -18,7 +18,7 @@ class Video extends Model
         'year_launched',
         'opened',
         'rating',
-        'duration',
+        'duration'
     ];
 
     protected $dates = ['deleted_at'];
@@ -27,8 +27,18 @@ class Video extends Model
         'id' => 'string',
         'opened' => 'boolean',
         'year_launched' => 'integer',
-        'duration' => 'integer',
+        'duration' => 'integer'
     ];
 
     public $incrementing = false;
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class);
+    }
 }
