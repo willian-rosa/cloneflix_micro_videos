@@ -25,18 +25,23 @@ class VideoController extends BasicCrudController
             'opened' => 'boolean',
             'rating' => 'required|in:'.implode(',', Video::RATING_LIST),
             'duration' => 'required|integer',
-            'categories_id' => 'required|array|exists:categories,id',
-            'genres_id' => 'required|array|exists:genres,id',
+            'categories_id' => 'required|array|exists:categories,id,deleted_at,NULl',
+            'genres_id' => 'required|array|exists:genres,id,deleted_at,NULl',
         ];
     }
 
     public function store(Request $request)
     {
         $validateData = $this->validate($request, $this->rulesStore());
-        /** @var Video $obj */
-        $obj = $this->model()::create($validateData);
-        $obj->categories()->sync($request->get('categories_id'));
-        $obj->genres()->sync($request->get('genres_id'));
+
+        $self = $this;
+
+        $obj = \DB::transaction(function () use ($self, $validateData, $request) {
+            $video = $this->model()::create($validateData);
+            $self->handleRelations($video, $request);
+            return $video;
+        });
+
         $obj->refresh();
         return $obj;
     }
@@ -44,12 +49,24 @@ class VideoController extends BasicCrudController
     public function update(Request $request, $id)
     {
         $validateData = $this->validate($request, $this->rulesUpdate());
-        $obj = $this->findOrFail($id);
-        $obj->categories()->sync($request->get('categories_id'));
-        $obj->genres()->sync($request->get('genres_id'));
-        $obj->update($validateData);
-        $obj->refresh();
-        return $obj;
+        $video = $this->findOrFail($id);
+
+        $self = $this;
+
+        $video = \DB::transaction(function () use ($self, $video, $validateData, $request) {
+            $self->handleRelations($video, $request);
+            $video->update($validateData);
+            return $video;
+        });
+
+        $video->refresh();
+        return $video;
+    }
+
+    protected function handleRelations(Video $video, Request $request)
+    {
+        $video->categories()->sync($request->get('categories_id'));
+        $video->genres()->sync($request->get('genres_id'));
     }
 
     protected function model()
