@@ -41,66 +41,35 @@ class VideoTest extends TestCase
     public function testCreate()
     {
         $video = Video::create([
-            'title' => 'Video 1'
+            'title' => 'Video 1',
+            'description' => 'Description Video 1',
+            'year_launched' => 2015,
+            'rating' => 'test',
+            'duration' => 120,
+//            'is_active' => true,
         ]);
 
         $video->refresh();
 
         $this->assertEquals(36, strlen($video->id));
-        $this->assertEquals('Video 1', $video->name);
-        $this->assertNull($video->description);
-        $this->assertTrue($video->is_active);
+        $this->assertEquals('Video 1', $video->title);
+        $this->assertIsString($video->description);
+//        $this->assertTrue($video->is_active);
+
 
         $video = Video::create([
-            'name' => 'Video 1',
-            'description' => null
-        ]);
-
-        $this->assertNull($video->description);
-
-        $video = Video::create([
-            'name' => 'Video 1',
-            'description' => 'Descrição de teste'
+            'title' => 'Video 1',
+            'description' => 'Descrição de teste',
+            'year_launched' => 2015,
+            'rating' => 'test',
+            'duration' => 120,
         ]);
 
         $this->assertEquals('Descrição de teste', $video->description);
 
-        $video = Video::create([
-            'name' => 'Video 1',
-            'is_active' => false
-        ]);
-
-        $this->assertFalse($video->is_active);
-
-        $video = Video::create([
-            'name' => 'Video 1',
-            'is_active' => true
-        ]);
-
-        $this->assertTrue($video->is_active);
 
     }
 
-    public function testUpdate()
-    {
-
-        /** @var Video $video */
-        $video = factory(Video::class)->create([
-            'description' => 'conteúdo da descrição',
-            'is_active' => true
-        ]);
-
-        $data = [
-            'name' => "Nome Video alterada",
-            'is_active' => true
-        ];
-
-        $video->update($data);
-
-        foreach ($data as $key => $value) {
-            $this->assertEquals($value, $video->{$key});
-        }
-    }
 
     public function testeDelete()
     {

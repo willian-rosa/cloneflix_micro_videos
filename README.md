@@ -12,6 +12,13 @@ Relacionamento
 
 
 
+Populando Seeders
+- `php artisan migrate --seed`
+- `php artisan migrate:refresh --seed`
+
+
+Permissões
+- sudo chown -R willian:willian database/migrations app/
 
 
 Anotações nord:

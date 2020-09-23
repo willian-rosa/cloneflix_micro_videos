@@ -5,9 +5,9 @@ namespace Tests\Unit\Models;
 use App\Models\CastMember;
 use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use PHPUnit\Framework\TestCase;
+use Tests\UnitTestCase;
 
-class CastMemberUnitTest extends TestCase
+class CastMemberUnitTest extends UnitTestCase
 {
 
     private $castMember;
