@@ -16,8 +16,9 @@ class GenreHasCategoriesRule implements Rule
      * GenreHasCategoriesRule constructor.
      * @param array $categoriesId
      */
-    public function __construct(array $categoriesId)
+    public function __construct($categoriesId)
     {
+        $categoriesId = (is_array($categoriesId)) ? $categoriesId : [];
         $this->categoriesId = array_unique($categoriesId);
     }
 
@@ -28,6 +29,8 @@ class GenreHasCategoriesRule implements Rule
      */
     public function passes($attribute, $genresId)
     {
+        $genresId = (is_array($genresId)) ? $genresId : [];
+
         $this->genresId = array_unique($genresId);
 
         if (!count($this->genresId) || !count($this->categoriesId)) {
@@ -44,6 +47,8 @@ class GenreHasCategoriesRule implements Rule
 
             array_push($categoriesFound, ...$rows->pluck('category_id')->toArray());
         }
+
+        $categoriesFound = array_unique($categoriesFound);
 
         if (count($categoriesFound) !== count($this->categoriesId)) {
             return false;

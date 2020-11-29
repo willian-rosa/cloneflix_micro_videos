@@ -76,6 +76,17 @@ class GenreHasCategoriesRuleUnitTest extends UnitTestCase
                 ['category_id' => 2]
             ])
         );
+
+        $this->assertTrue($rule->passes('', [1, 2]));
+        $rule = $this->createRuleMockeryGetRows(
+            [1, 2],
+            collect([
+                ['category_id' => 1],
+                ['category_id' => 2],
+                ['category_id' => 1],
+                ['category_id' => 2],
+            ])
+        );
         $this->assertTrue($rule->passes('', [1]));
     }
 
