@@ -35,6 +35,7 @@ class VideoTest extends TestCase
                 'duration',
                 'created_at',
                 'updated_at',
+                'video_file',
                 'deleted_at',
             ],
             $keysVideos

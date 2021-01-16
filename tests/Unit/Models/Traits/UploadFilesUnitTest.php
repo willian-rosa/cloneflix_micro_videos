@@ -63,4 +63,40 @@ class UploadFilesUnitTest extends TestCase
         \Storage::assertMissing("2/{$file2->hashName()}");
 
     }
+
+    public function testExtractFiles()
+    {
+        $attributes = [];
+        $files = UploadFilesStub::extractFiles($attributes);
+        $this->assertCount(0, $attributes);
+        $this->assertCount(0, $files);
+
+        $attributes = ['file1' => 'test'];
+        $files = UploadFilesStub::extractFiles($attributes);
+        $this->assertCount(1, $attributes);
+        $this->assertEquals(['file1' => 'test'], $attributes);
+        $this->assertCount(0, $files);
+
+        $attributes = ['file1' => 'test', 'file2' => 'teste2'];
+        $files = UploadFilesStub::extractFiles($attributes);
+        $this->assertCount(2, $attributes);
+        $this->assertEquals(['file1' => 'test', 'file2' => 'teste2'], $attributes);
+        $this->assertCount(0, $files);
+
+        $file1 = UploadedFile::fake()->create('video1.avi');
+        $attributes = ['file1' => $file1, 'name' => 'teste2'];
+        $files = UploadFilesStub::extractFiles($attributes);
+        $this->assertCount(2, $attributes);
+        $this->assertEquals(['file1' => $file1->hashName(), 'name' => 'teste2'], $attributes);
+        $this->assertCount(1, $files);
+        $this->assertEquals([$file1], $files);
+
+        $file2 = UploadedFile::fake()->create('video2.avi');
+        $attributes = ['file1' => $file1, 'file2' => $file2, 'name' => 'teste2'];
+        $files = UploadFilesStub::extractFiles($attributes);
+        $this->assertCount(3, $attributes);
+        $this->assertEquals(['file1' => $file1->hashName(), 'file2' => $file2->hashName(), 'name' => 'teste2'], $attributes);
+        $this->assertCount(2, $files);
+        $this->assertEquals([$file1, $file2], $files);
+    }
 }
