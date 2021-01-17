@@ -9,6 +9,8 @@ Relacionamento
 - Obs o many-to-many tem que ser por ordem alfabética
 - Criar a tabela `php artisan migrate`
 
+- Rodar novamente o migration `php artisan migrate:refresh`
+
 
 
 

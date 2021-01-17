@@ -37,6 +37,22 @@ class UploadFilesUnitTest extends TestCase
         \Storage::assertExists("1/{$file2->hashName()}");
     }
 
+    public function testDeleteOldFiles()
+    {
+        \Storage::fake();
+        $file1 = UploadedFile::fake()->create('video1.mp4')->size(1);
+        $file2 = UploadedFile::fake()->create('video2.mp4')->size(1);
+        $this->stub->uploadFiles([$file1, $file2]);
+        $this->stub->deleteOldFiles();
+        $this->assertCount(2, \Storage::allFiles());
+
+        $this->stub->oldFiles = [$file1->hashName()];
+        $this->stub->deleteOldFiles();
+        $this->assertCount(1, \Storage::allFiles());
+        \Storage::assertMissing("1/{$file1->hashName()}");
+        \Storage::assertExists("1/{$file2->hashName()}");
+    }
+
     public function testDeleteFile()
     {
         \Storage::fake();
