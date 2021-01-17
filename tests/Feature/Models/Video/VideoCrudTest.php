@@ -1,19 +1,14 @@
 <?php
 
-namespace Tests\Feature\Models;
+namespace Tests\Feature\Models\Video;
 
-use App\Http\Controllers\Api\VideoController;
 use App\Models\Video;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Http\Request;
-use Tests\Exceptions\TestException;
 use Tests\TestCase;
 
-class VideoTest extends TestCase
+class VideoCrudTest extends BaseVideoTestCase
 {
-
-    use DatabaseMigrations;
 
     public function testList()
     {
@@ -45,14 +40,7 @@ class VideoTest extends TestCase
 
     public function testCreate()
     {
-        $video = Video::create([
-            'title' => 'Video 1',
-            'description' => 'Description Video 1',
-            'year_launched' => 2015,
-            'rating' => 'test',
-            'duration' => 120,
-//            'is_active' => true,
-        ]);
+        $video = Video::create($this->data);
 
         $video->refresh();
 
@@ -62,13 +50,7 @@ class VideoTest extends TestCase
 //        $this->assertTrue($video->is_active);
 
 
-        $video = Video::create([
-            'title' => 'Video 1',
-            'description' => 'Descrição de teste',
-            'year_launched' => 2015,
-            'rating' => 'test',
-            'duration' => 120,
-        ]);
+        $video = Video::create(['description' => 'Descrição de teste'] + $this->data);
 
         $this->assertEquals('Descrição de teste', $video->description);
 
@@ -79,14 +61,7 @@ class VideoTest extends TestCase
     {
         $hasError = false;
         try {
-            Video::create([
-                'title' => 'title',
-                'description' => 'description',
-                'year_launched' => 2010,
-                'rating' => Video::RATING_LIST[0],
-                'duration' => 90,
-                'categories_id' => [0, 1, 2]
-            ]);
+            Video::create($this->data + ['categories_id' => [0, 1, 2]]);
         } catch (QueryException $exception) {
                 $this->assertCount(0, Video::all());
             $hasError = true;
@@ -101,14 +76,7 @@ class VideoTest extends TestCase
         $oldTitle = $video->title;
 
         try {
-            $video->update([
-                'title' => 'title',
-                'description' => 'description',
-                'year_launched' => 2010,
-                'rating' => Video::RATING_LIST[0],
-                'duration' => 90,
-                'categories_id' => [0, 1, 2]
-            ]);
+            $video->update($this->data + ['categories_id' => [0, 1, 2]]);
         } catch (QueryException $exception) {
             $this->assertCount(1, Video::all());
             $hasError = true;
