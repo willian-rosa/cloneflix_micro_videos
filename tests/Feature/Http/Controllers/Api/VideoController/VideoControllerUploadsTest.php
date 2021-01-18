@@ -67,28 +67,28 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase
 
     }
 
-//    public function testUpdateWithFiles()
-//    {
-//        $category = factory(Category::class)->create();
-//        $genre = factory(Genre::class)->create();
-//        $genre->categories()->sync($category->id);
-//
-//        \Storage::fake();
-//        $files = $this->getFiles();
-//
-//        $response = $this->json(
-//            'PUT',
-//            $this->routeUpdate(),
-//            $this->sendData + ['categories_id' => [$category->id], 'genres_id' => [$genre->id]] + $files
-//        );
-//
-//        $response->assertStatus(200);
-//        $id = $response->json('id');
-//        foreach ($files as $file) {
-//            \Storage::assertExists("$id/{$file->hashName()}");
-//        }
-//
-//    }
+    public function testUpdateWithFiles()
+    {
+        $category = factory(Category::class)->create();
+        $genre = factory(Genre::class)->create();
+        $genre->categories()->sync($category->id);
+
+        \Storage::fake();
+        $files = $this->getFiles();
+
+        $response = $this->json(
+            'PUT',
+            $this->routeUpdate(),
+            $this->sendData + ['categories_id' => [$category->id], 'genres_id' => [$genre->id]] + $files
+        );
+
+        $response->assertStatus(200);
+        $id = $response->json('id');
+        foreach ($files as $file) {
+            \Storage::assertExists("$id/{$file->hashName()}");
+        }
+
+    }
 
     protected function getFiles()
     {

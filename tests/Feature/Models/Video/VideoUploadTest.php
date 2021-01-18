@@ -47,8 +47,54 @@ class VideoUploadTest extends BaseVideoTestCase
             $this->assertCount(0, \Storage::allFiles());
             $hasError = true;
         }
-
         $this->assertTrue($hasError);
+    }
 
+    public function testUpdateWithFiles()
+    {
+
+        \Storage::fake();
+        $video = factory(Video::class)->create();
+        $videoFile = UploadedFile::fake()->image('video.mp4');
+        $thumbFile = UploadedFile::fake()->image('thumb.mp4');
+        $video->update($this->data + [
+                'video_file' => $videoFile,
+                'thumb_file' => $thumbFile,
+            ]);
+        \Storage::assertExists("{$video->id}/{$video->video_file}");
+        \Storage::assertExists("{$video->id}/{$video->thumb_file}");
+
+        $newVideoFile = UploadedFile::fake()->image('new_video.mp4');
+        $video->update($this->data + [
+                'video_file' => $newVideoFile,
+            ]);
+
+        \Storage::assertExists("{$video->id}/{$newVideoFile->hashName()}");
+        \Storage::assertExists("{$video->id}/{$thumbFile->hashName()}");
+        \Storage::assertMissing("{$video->id}/{$videoFile->hashName()}");
+    }
+
+    public function testUpdateIfRollbackFiles()
+    {
+        $video = factory(Video::class)->create();
+        \Storage::fake();
+        \Event::listen(TransactionCommitted::class, function() {
+            throw new TestException();
+        });
+
+        $hasError = false;
+
+        try {
+            $video->update(
+                $this->data + [
+                    'thumb_file' => UploadedFile::fake()->image('thumb.jpg'),
+                    'video_file' => UploadedFile::fake()->image('thumb.mp4'),
+                ]
+            );
+        } catch (TestException $e) {
+            $this->assertCount(0, \Storage::allFiles());
+            $hasError = true;
+        }
+        $this->assertTrue($hasError);
     }
 }
