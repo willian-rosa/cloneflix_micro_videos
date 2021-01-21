@@ -14,6 +14,11 @@ trait UploadFiles
 
     protected abstract function uploadDir(): string;
 
+    public function relativeFilePath($value)
+    {
+        return "{$this->uploadDir()}/{$value}";
+    }
+
     public static function bootUploadFiles()
     {
         static::updating(function(Model $model){
@@ -77,4 +82,8 @@ trait UploadFiles
         return $files;
     }
 
+    protected function getFileUrl($filename): ?string
+    {
+        return \Storage::url($this->relativeFilePath($filename));
+    }
 }

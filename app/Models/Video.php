@@ -12,6 +12,11 @@ class Video extends Model
     use SoftDeletes, Uuid, UploadFiles;
 
     const RATING_LIST = ['L', '10'  , '12', '14', '16', '18'];
+    // Tamanhos dos arquivos em KB
+    const FILE_MAX_SIZE_THUMB = 5 * 1024;
+    const FILE_MAX_SIZE_BANNER = 10 * 1024;
+    const FILE_MAX_SIZE_TRAILER = 1 * 1024 * 1024;
+    const FILE_MAX_SIZE_VIDEO = 50 * 1024 * 1024;
 
     protected $fillable = [
         'title',
@@ -22,6 +27,8 @@ class Video extends Model
         'duration',
         'video_file',
         'thumb_file',
+        'banner_file',
+        'trailer_file',
     ];
 
     protected $dates = ['deleted_at'];
@@ -34,7 +41,12 @@ class Video extends Model
     ];
 
     public $incrementing = false;
-    public static $fileFields = ['video_file', 'thumb_file'];
+    public static $fileFields = [
+        'video_file',
+        'thumb_file',
+        'banner_file',
+        'trailer_file'
+    ];
 
     public static function create(array $attributes = [])
     {

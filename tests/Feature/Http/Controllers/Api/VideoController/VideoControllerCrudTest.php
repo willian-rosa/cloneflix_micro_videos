@@ -315,10 +315,10 @@ class VideoControllerCrudTest extends BaseVideoControllerTestCase
 
         $response = $this->json('POST',
             $this->routeStore(),
-            $this->sendData + [
+            [
                 'genres_id' => [$genreId],
                 'categories_id' => [$categoriesId[0]]
-            ]
+            ] + $this->sendData
         );
 
         $videoId = $response->json('id');
@@ -328,10 +328,10 @@ class VideoControllerCrudTest extends BaseVideoControllerTestCase
             'video_id' => $videoId
         ]);
 
-        $sendDate = $this->sendData + [
+        $sendDate = [
                 'genres_id' => [$genreId],
                 'categories_id' => [$categoriesId[1], $categoriesId[2]]
-            ];
+            ] + $this->sendData;
 
         $response = $this->json('PUT', route('api.videos.update', ['video' => $videoId]), $sendDate);
         $this->assertEquals($videoId, $response->json('id'));
@@ -362,10 +362,10 @@ class VideoControllerCrudTest extends BaseVideoControllerTestCase
 
         $response = $this->json('POST',
             $this->routeStore(),
-            $this->sendData + [
+            [
                 'genres_id' => [$genresId[0]],
                 'categories_id' => [$category->id]
-            ]
+            ] + $this->sendData
         );
 
         $videoId = $response->json('id');
@@ -375,10 +375,10 @@ class VideoControllerCrudTest extends BaseVideoControllerTestCase
             'video_id' => $videoId
         ]);
 
-        $sendDate = $this->sendData + [
+        $sendDate = [
                 'genres_id' => [$genresId[1], $genresId[2]],
                 'categories_id' => [$category->id]
-            ];
+            ] + $this->sendData;
 
         $response = $this->json('PUT', route('api.videos.update', ['video' => $videoId]), $sendDate);
 

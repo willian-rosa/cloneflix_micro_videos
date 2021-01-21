@@ -115,4 +115,9 @@ class UploadFilesUnitTest extends TestCase
         $this->assertCount(2, $files);
         $this->assertEquals([$file1, $file2], $files);
     }
+
+    public function testRelativeFilePath()
+    {
+        $this->assertEquals('1/video.mp4', $this->stub->relativeFilePath('video.mp4'));
+    }
 }
