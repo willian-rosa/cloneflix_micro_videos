@@ -15,3 +15,4 @@ yarn-error.log
 composer.lock
 package-lock.json
 #.docker/nginx/nginx.conf
+.env_bkp_nao_commitar
