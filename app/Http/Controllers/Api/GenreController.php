@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\GenreResource;
 use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Http\Request;
@@ -69,4 +70,13 @@ class GenreController extends BasicCrudController
         return $this->rules;
     }
 
+    protected function resource(): string
+    {
+        return GenreResource::class;
+    }
+
+    protected function resourceCollectionClass(): string
+    {
+        return $this->resource();
+    }
 }

@@ -3,6 +3,7 @@
 Lembretes:
 - Criar model `php artisan make:model Models/Genre --all`
 - Criar uma seeder `php artisan make:seeder GenresTableSeeder`
+- Criar uma resource `php artisan make:resource CastMember`
 
 Relacionamento 
 - Criar model `php artisan make:migration create_category_genre_table`
@@ -20,7 +21,7 @@ Populando Seeders
 
 
 Permissões
-- sudo chown -R willian:willian database/migrations app/
+- `sudo chown -R willian:willian database/migrations app/`
 
 
 Anotações nord:

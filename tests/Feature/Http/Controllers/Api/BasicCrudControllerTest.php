@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BasicCrudController;
+use App\Http\Resources\CategoryResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\Request;
@@ -38,8 +39,7 @@ class BasicCrudControllerTest extends TestCase
         $category = CategoryStub::create(['name' => 'Categoria 1', 'description' => 'Descrição da Categoria']);
         $category->refresh();
 
-
-        $result = $this->controller->index()->toArray();
+        $result = $this->controller->index()->toArray(null);
         $this->assertEquals([$category->toArray()], $result);
     }
 
@@ -63,7 +63,7 @@ class BasicCrudControllerTest extends TestCase
 
         $this->assertEquals(
             CategoryStub::find(1)->toArray(),
-            $obj->toArray()
+            $obj->toArray($request)
         );
     }
 
@@ -96,7 +96,7 @@ class BasicCrudControllerTest extends TestCase
         $category = CategoryStub::create(['name' => 'Categoria 1', 'description' => 'Descrição da Categoria']);
         $resultSave = $this->controller->show($category->id);
 
-        $this->assertEquals($resultSave->toArray(), CategoryStub::find(1)->toArray());
+        $this->assertEquals($resultSave->toArray(null), CategoryStub::find(1)->toArray());
     }
 
     public function testUpdate()
@@ -111,7 +111,7 @@ class BasicCrudControllerTest extends TestCase
 
         $resultSave = $this->controller->update($request, $category->id);
 
-        $this->assertEquals($resultSave->toArray(), CategoryStub::find(1)->toArray());
+        $this->assertEquals($resultSave->toArray(null), CategoryStub::find(1)->toArray());
 
     }
 

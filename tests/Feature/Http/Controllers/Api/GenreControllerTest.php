@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\GenreController;
+use App\Http\Resources\GenreResource;
 use App\Models\Category;
 use App\Models\Genre;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -10,15 +11,23 @@ use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Http\Request;
 use Tests\Exceptions\TestException;
 use Tests\TestCase;
+use Tests\Traits\TestResources;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
 
 class GenreControllerTest extends TestCase
 {
 
-    use DatabaseMigrations, TestValidations, TestSaves;
+    use DatabaseMigrations, TestValidations, TestSaves, TestResources;
 
     private $genre;
+    private $serializedFields = [
+        'id',
+        'name',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
 
     protected function setUp(): void
     {
@@ -47,14 +56,32 @@ class GenreControllerTest extends TestCase
     {
         $response = $this->get(route('api.genres.index'));
         $response->assertStatus(200);
-        $response->assertJson([$this->genre->toArray()]);
+        $response->assertJson([
+            'meta' => ['per_page' => 15]
+        ]);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => $this->serializedFields
+            ],
+            'meta' => [],
+            'links' => [],
+        ]);
+
+        $resource = GenreResource::collection(collect([$this->genre]));
+        $this->assertResource($response, $resource);
     }
 
     public function testShow()
     {
         $response = $this->get(route('api.genres.show', ['genre' => $this->genre->id]));
         $response->assertStatus(200);
-        $response->assertJson($this->genre->toArray());
+        $response->assertJsonStructure([
+            'data' => $this->serializedFields
+        ]);
+
+        $idGenre = $response->json('data.id');
+        $resource = new GenreResource(Genre::find($idGenre));
+        $this->assertResource($response, $resource);
     }
 
     public function testInvalidationData()

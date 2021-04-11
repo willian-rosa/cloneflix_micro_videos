@@ -4,9 +4,6 @@
 namespace Tests\Traits;
 
 
-use App\Http\Resources\CategoryResource;
-use App\Models\Category;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 

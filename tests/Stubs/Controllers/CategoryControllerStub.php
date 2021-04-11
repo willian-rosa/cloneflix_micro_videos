@@ -33,4 +33,10 @@ class CategoryControllerStub extends BasicCrudController
     {
         return CategoryResource::class;
     }
+
+    protected function resourceCollectionClass(): string
+    {
+        return $this->resource();
+    }
+
 }

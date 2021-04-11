@@ -124,6 +124,7 @@ class VideoUploadTest extends BaseVideoTestCase
         $baseUrl = config('filesystems.disks.s3.url');
         \Config::set('filesystems.default', 's3');
         foreach ($filesFields as $field => $value) {
+            dump($field, "{$field}_url", $video->thumb_file_url);
             $fileUrl = $video->{"{$field}_url"};
             $this->assertEquals("{$baseUrl}/{$video->id}/$value", $fileUrl);
         }
