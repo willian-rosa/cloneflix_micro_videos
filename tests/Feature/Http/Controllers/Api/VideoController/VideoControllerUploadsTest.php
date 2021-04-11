@@ -127,7 +127,7 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase
 
     protected function assertFilesOnPersist(TestResponse $response, $files)
     {
-        $id = $response->json('id');
+        $id = $response->json('data.id');
         $video = Video::find($id);
         $this->assertfilesExistsInStorage($video, $files);
     }
