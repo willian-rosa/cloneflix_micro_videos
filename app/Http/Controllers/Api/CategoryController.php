@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 
 class CategoryController extends BasicCrudController
@@ -26,4 +27,15 @@ class CategoryController extends BasicCrudController
     {
         return $this->rules;
     }
+
+    protected function resourceCollectionClass(): string
+    {
+        return $this->resource();
+    }
+
+    protected function resource(): string
+    {
+        return CategoryResource::class;
+    }
+
 }
