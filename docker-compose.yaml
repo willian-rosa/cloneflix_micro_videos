@@ -69,8 +69,13 @@ services:
       - ./.docker/dbdata:/var/lib/mysql
       - ./.docker/mysql:/docker-entrypoint-initdb.d
     networks:
-      - cloneflix_micro_videos_app_networks
+      cloneflix_micro_videos_app_networks:
+        ipv4_address: 172.18.0.21
 
 networks:
   cloneflix_micro_videos_app_networks:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.18.0.0/24"

@@ -3,7 +3,6 @@
 namespace Tests\Feature\Models\Video;
 
 use App\Models\Video;
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
