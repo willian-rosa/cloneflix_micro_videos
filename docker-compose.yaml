@@ -26,8 +26,12 @@ services:
       - _AWS_URL=$CLONEFLIX_AWS_URL
       - NGINX_HOST=cloneflix_micro_videos_app
       - NGINX_PORT=9000
+      - CHOKIDAR_USEPOLLING=true
     volumes:
       - .:/var/www
+    ports:
+    - "3000:3000"
+    - "35729:35729"
     networks:
       - cloneflix_micro_videos_app_networks
     depends_on:

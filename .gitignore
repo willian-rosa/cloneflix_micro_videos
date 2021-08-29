@@ -2,3 +2,4 @@
 .docker/dbdata
 .env
 .env.testing
+.npm-cache
