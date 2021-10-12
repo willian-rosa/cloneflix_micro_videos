@@ -34,7 +34,7 @@ Populando Seeders
 
 
 Permissões
-- `sudo chown -R willian:willian database/migrations app/`
+- `sudo chown -R willian:willian database/migrations app/ config/`
 - sudo chown -R willian:willian .docker/ frontend/
 
 
