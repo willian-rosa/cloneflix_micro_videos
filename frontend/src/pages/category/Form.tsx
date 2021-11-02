@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
 export const Form = () => {
 
-    const classes = useStyles()
+    const classes = useStyles();
 
     const buttonProps: ButtonProps = {
         variant: "outlined",

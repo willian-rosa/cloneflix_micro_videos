@@ -53,7 +53,7 @@ export const Form = () => {
 
 
             <Box dir="rtl">
-                <Button {...propsButton}>Salvar</Button>
+                <Button {...propsButton} onClick={() => onSubmit(getValues())}>Salvar</Button>
                 <Button {...propsButton} type="submit">Salvar e continuar editando</Button>
             </Box>
         </form>

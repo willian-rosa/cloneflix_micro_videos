@@ -5,6 +5,7 @@ import {httpVideo} from "../../util/http";
 import {Chip} from "@material-ui/core";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
+import genreHttp from "../../util/http/genre-http";
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -33,15 +34,12 @@ const columnsDefinition: MUIDataTableColumn[] = [
     },
 ]
 
-type Props = {
-
-};
-const Table = (props: Props) => {
+const Table = () => {
 
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        httpVideo.get('genres').then(
+        genreHttp.list().then(
             response => {
                 setData(response.data['data'])
             }

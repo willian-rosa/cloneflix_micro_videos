@@ -5,6 +5,7 @@ import CategoryList from "../pages/category/PageList";
 import CategoryPageForm from "../pages/category/PageForm";
 
 import GenreList from "../pages/genre/PageList";
+import GenrePageForm from "../pages/genre/PageForm";
 
 import CastMembersList from "../pages/cast-members/PageList";
 import CastMembersPageForm from "../pages/cast-members/PageForm";
@@ -52,6 +53,20 @@ const  routes: MyRouteProps[] = [
         label: 'Listar Gêneros',
         path: '/genres',
         component: GenreList,
+        exact: true,
+    },
+    {
+        name: 'genres.create',
+        label: 'Criar Gêneros',
+        path: '/genres/create',
+        component: GenrePageForm,
+        exact: true,
+    },
+    {
+        name: 'genres.edit',
+        label: 'Editar Gênero',
+        path: '/genres/:id/edit',
+        component: GenrePageForm,
         exact: true,
     },
     // ################ Cast Members
