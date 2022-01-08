@@ -1,18 +1,8 @@
 import * as React from 'react';
-import {
-    Box,
-    Button,
-    ButtonProps,
-    FormControl, FormLabel,
-    InputLabel,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    TextField
-} from "@material-ui/core";
+import {useEffect, useState} from 'react';
+import {Box, Button, ButtonProps, MenuItem, TextField} from "@material-ui/core";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {useForm} from "react-hook-form";
-import {useEffect, useState} from "react";
 import categoryHttp from "../../util/http/category-http";
 import genreHttp from "../../util/http/genre-http";
 

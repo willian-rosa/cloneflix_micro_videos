@@ -1,5 +1,15 @@
 import * as React from 'react';
-import {Box, Button, ButtonProps, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField} from "@material-ui/core";
+import {
+    Box,
+    Button,
+    ButtonProps,
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+    Radio,
+    RadioGroup,
+    TextField
+} from "@material-ui/core";
 import {useForm} from "react-hook-form";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import castMemberHttp from "../../util/http/cast-member-http";
@@ -46,8 +56,8 @@ export const Form = () => {
             <FormControl component="fieldset" margin="normal">
                 <FormLabel component="legend">Tipo</FormLabel>
                 <RadioGroup aria-label="Tipo">
-                    <FormControlLabel control={<Radio />} label="Diretor" value="1" {...register('type')}/>
-                    <FormControlLabel control={<Radio />} label="Ator" value="2" {...register('type')}/>
+                    <FormControlLabel control={<Radio color="primary" />} label="Diretor" value="1" {...register('type')}/>
+                    <FormControlLabel control={<Radio color="primary" />} label="Ator" value="2" {...register('type')}/>
                 </RadioGroup>
             </FormControl>
 
