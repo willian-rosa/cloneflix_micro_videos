@@ -35,7 +35,8 @@ export const Form = () => {
     const {register, getValues, handleSubmit} = useForm();
 
     const propsButton: ButtonProps = {
-        variant: "outlined",
+        variant: "contained",
+        color: "secondary",
         className: classes.submit
     };
 

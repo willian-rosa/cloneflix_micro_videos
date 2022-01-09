@@ -8,8 +8,9 @@ import Table from "./Table";
 const List = () => {
     return (
         <Page title="Listagem Gênero">
-            <Box dir={'rtl'}>
+            <Box dir={'rtl'} paddingBottom={2}>
                 <Fab
+                    color="secondary"
                     title="Adicionar Gênero"
                     size="small"
                     component={Link}
