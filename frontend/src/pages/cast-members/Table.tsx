@@ -4,6 +4,8 @@ import MUIDataTable, {MUIDataTableColumn} from "mui-datatables";
 import {httpVideo} from "../../util/http";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
+import {Link} from "react-router-dom";
+import EditIcon from "@material-ui/icons/Edit";
 
 const CastMemberEnum = {
     1: "Diretor",
@@ -36,6 +38,19 @@ const columnsDefinition: MUIDataTableColumn[] = [
             }
         }
     },
+    {
+        name: "id",
+        label: "Ação",
+        options: {
+            customBodyRender(value, tableMeta, updateValue)
+            {
+                return <Link to={`cast-members/${value}/edit`} >
+                    <EditIcon/>
+                </Link>
+
+            }
+        }
+    }
 ]
 
 type Props = {
