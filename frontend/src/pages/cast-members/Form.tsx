@@ -1,10 +1,12 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import {
     Box,
     Button,
     ButtonProps,
     FormControl,
-    FormControlLabel, FormHelperText,
+    FormControlLabel,
+    FormHelperText,
     FormLabel,
     Radio,
     RadioGroup,
@@ -16,8 +18,6 @@ import castMemberHttp from "../../util/http/cast-member-http";
 import * as yup from "../../util/vendor/yup";
 import {useSnackbar} from "notistack";
 import {useHistory, useParams} from "react-router";
-import {useEffect, useState} from "react";
-import categoryHttp from "../../util/http/category-http";
 
 const useStyles = makeStyles((theme: Theme) => {
     return {
@@ -84,9 +84,9 @@ export const Form = () => {
                 setTimeout(() => {
                     if (event) {
                         if (params.id) {
-                            history.replace(`/cast-members/${response.data.id}/edit`)
+                            history.replace(`/cast-members/${response.data.data.id}/edit`)
                         } else {
-                            history.push(`/cast-members/${response.data.id}/edit`)
+                            history.push(`/cast-members/${response.data.data.id}/edit`)
                         }
                     } else {
                         history.push('/cast-members');
