@@ -1,4 +1,4 @@
-import {createMuiTheme, SimplePaletteColorOptions} from "@material-ui/core";
+import {createTheme, SimplePaletteColorOptions} from "@material-ui/core/styles";
 import {PaletteOptions} from "@material-ui/core/styles/createPalette";
 import {green, red} from "@material-ui/core/colors";
 
@@ -24,7 +24,7 @@ const palette: PaletteOptions = {
     }
 }
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette,
     overrides: {
         MUIDataTable: {
@@ -105,6 +105,11 @@ const theme = createMuiTheme({
             }
         },
         MuiTablePagination: {
+            root: {
+                color: (palette!.primary as SimplePaletteColorOptions).main
+            }
+        },
+        MuiSvgIcon: {
             root: {
                 color: (palette!.primary as SimplePaletteColorOptions).main
             }

@@ -22,12 +22,6 @@ const useStyles = makeStyles((theme: Theme) => {
     }
 });
 
-// TODO isso está duplicado
-const CastMemberEnum = {
-    1: "Diretor",
-    2: "Ator",
-}
-
 export const Form = () => {
 
     const classes = useStyles();

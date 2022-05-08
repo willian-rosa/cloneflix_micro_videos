@@ -1,11 +1,12 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import MUIDataTable, {MUIDataTableColumn} from "mui-datatables";
-import {Chip} from "@material-ui/core";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import categoryHttp from "../../util/http/category-http";
 import {BadgeNo, BadgeYes} from "../../components/Badge";
+import EditIcon from '@material-ui/icons/Edit';
+import {Link} from "react-router-dom";
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -32,6 +33,19 @@ const columnsDefinition: MUIDataTableColumn[] = [
             }
         }
     },
+    {
+        name: "id",
+        label: "Ação",
+        options: {
+            customBodyRender(value, tableMeta, updateValue)
+            {
+                return <Link to={`categories/${value}/edit`} >
+                    <EditIcon/>
+                </Link>
+
+            }
+        }
+    }
 ]
 
 interface Category{
