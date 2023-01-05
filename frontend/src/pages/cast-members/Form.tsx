@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const validationSchema = yup.object().shape({
     name: yup.string().label('Nome').required(),
-    type: yup.boolean().label('Nome').required()
+    type: yup.boolean().label('Tipo').required()
 });
 
 
@@ -100,6 +100,8 @@ export const Form = () => {
             .finally(() => setLoading(false));
     }
 
+    let typeWatch = watch('type') + "";
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <TextField
@@ -114,15 +116,23 @@ export const Form = () => {
                 InputLabelProps={{shrink: true}}
             />
 
-            <FormControl component="fieldset" margin="normal" disabled={loading}>
+            <FormControl margin="normal" disabled={loading} error={errors.type !== undefined}>
                 <FormLabel component="legend">Tipo</FormLabel>
-                <RadioGroup aria-label="Tipo">
-                    <FormControlLabel name="type" control={<Radio color="primary" />} label="Diretor" value="1" inputRef={register}/>
-                    <FormControlLabel name="type" control={<Radio color="primary" />} label="Ator" value="2" inputRef={register}/>
+                <RadioGroup
+                    name="type"
+                    aria-label="Tipo"
+                    onChange={(e) => {
+                        setValue('type', parseInt(e.target.value));
+                        setValue('name', parseInt(e.target.value));
+                        console.log(parseInt(e.target.value), watch('type'), typeWatch)
+                    }}
+                    value={typeWatch}
+                >
+                    <FormControlLabel value="1" control={<Radio color="primary" />} label="Diretor" />
+                    <FormControlLabel value="2" control={<Radio color="primary" />} label="Ator" />
                 </RadioGroup>
                 <FormHelperText error={errors.type != undefined} >{errors.type && errors.type.message}</FormHelperText>
             </FormControl>
-
             <Box dir="rtl">
                 <Button {...propsButton} onClick={() => onSubmit(getValues(), null)}>Salvar</Button>
                 <Button {...propsButton} type="submit">Salvar e continuar editando</Button>

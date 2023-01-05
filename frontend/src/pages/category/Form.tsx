@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Box, Button, ButtonProps, Checkbox, FormControlLabel, TextField} from "@material-ui/core";
+import {Box, Button, ButtonProps, Checkbox, FormControlLabel, Grid, TextField} from "@material-ui/core";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {useForm} from "react-hook-form";
 import categoryHttp from "../../util/http/category-http";
@@ -7,14 +7,9 @@ import * as yup from '../../util/vendor/yup';
 import {useParams, useHistory} from "react-router";
 import {useEffect, useState} from "react";
 import {useSnackbar} from "notistack";
+import SubmitActions from "../../components/SubmitActions";
+import {DefaultForm} from "../../components/DefaultForm";
 
-const useStyles = makeStyles((theme: Theme) => {
-   return {
-       submit: {
-           margin: theme.spacing(1)
-       }
-   }
-});
 
 const validationSchema = yup.object().shape({
     name: yup.string().label('Nome').required()
@@ -22,10 +17,7 @@ const validationSchema = yup.object().shape({
 
 
 export const Form = () => {
-    const snackbar = useSnackbar();
-    const history = useHistory();
-    const classes = useStyles();
-    const {register, handleSubmit, getValues, errors, reset, watch, setValue} = useForm({
+    const {register, handleSubmit, getValues, errors, reset, watch, setValue, triggerValidation} = useForm({
         validationSchema,
         defaultValues: {
             is_active: true,
@@ -33,15 +25,12 @@ export const Form = () => {
             description: '',
         }
     });
+    const snackbar = useSnackbar();
+    const history = useHistory();
     const params: {id?} = useParams();
     const [category, setCategory] = useState<{id: string} | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const buttonProps: ButtonProps = {
-        variant: "contained",
-        color: "secondary",
-        className: classes.submit,
-        disabled: loading
-    };
+
 
     useEffect(() => {
         register({name: 'is_active'})
@@ -97,7 +86,7 @@ export const Form = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <DefaultForm GridItemProps={{xs: 12, md: 6}} onSubmit={handleSubmit(onSubmit)}>
             <TextField
                 name="name"
                 inputRef={register}
@@ -137,11 +126,11 @@ export const Form = () => {
                 label="Ativo?"
                 labelPlacement="end"
             />
-
-            <Box dir={"rtl"}>
-                <Button color="primary" {...buttonProps} onClick={() => onSubmit(getValues(), null)}>Salvar</Button>
-                <Button type="submit" {...buttonProps}>Salvar e continuar editando</Button>
-            </Box>
-        </form>
+            <SubmitActions disableButtons={loading} handleSave={() =>
+                    triggerValidation().then(isValid => {
+                        isValid && onSubmit(getValues(), null)
+                    })
+                } />
+        </DefaultForm>
     );
 };

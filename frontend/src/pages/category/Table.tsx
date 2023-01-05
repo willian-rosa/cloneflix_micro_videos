@@ -1,12 +1,14 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import MUIDataTable, {MUIDataTableColumn} from "mui-datatables";
+import {MUIDataTableColumn} from "mui-datatables";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import categoryHttp from "../../util/http/category-http";
 import {BadgeNo, BadgeYes} from "../../components/Badge";
 import EditIcon from '@material-ui/icons/Edit';
 import {Link} from "react-router-dom";
+import {Category, ListResponse} from "../../util/models";
+import DefaultTable from "../../components/Table"
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -48,10 +50,6 @@ const columnsDefinition: MUIDataTableColumn[] = [
     }
 ]
 
-interface Category{
-    id: string,
-    name: string,
-}
 
 type Props = {
 
@@ -61,13 +59,21 @@ const Table = (props: Props) => {
     const [data, setData] = useState<Category[]>([]);
 
     useEffect(() => {
-        categoryHttp
-            .list<{data: Category[]}>()
-            .then((response) => setData(response.data.data))
+        let isActiveComponent = true;
+        (async () => {
+            const {data} = await categoryHttp.list<ListResponse<Category>>();
+            if (isActiveComponent) {
+                console.log(data.data[0])
+                setData(data.data);
+            }
+            return () => {
+                isActiveComponent = false;
+            }
+        })();
     }, []);
 
     return (
-        <MUIDataTable
+        <DefaultTable
             title={"Minha tabela"}
             columns={columnsDefinition}
             data={data}
