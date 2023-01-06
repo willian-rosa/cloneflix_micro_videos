@@ -8,16 +8,26 @@ import {BadgeNo, BadgeYes} from "../../components/Badge";
 import EditIcon from '@material-ui/icons/Edit';
 import {Link} from "react-router-dom";
 import {Category, ListResponse} from "../../util/models";
-import DefaultTable from "../../components/Table"
+import DefaultTable, {TableColumn} from "../../components/Table"
 
-const columnsDefinition: MUIDataTableColumn[] = [
+const columnsDefinition: TableColumn[] = [
+    {
+        name: "id",
+        label: "ID",
+        width: "33%",
+        options: {
+            sort: false
+        }
+    },
     {
         name: "name",
         label: "Nome",
+        width: "33%"
     },
     {
         name: "is_active",
         label: "Status",
+        width: "4%",
         options: {
             customBodyRender(value, tableMeta, updateValue)
             {
@@ -28,6 +38,7 @@ const columnsDefinition: MUIDataTableColumn[] = [
     {
         name: "created_at",
         label: "Criado em",
+        width: "10%",
         options: {
             customBodyRender(value, tableMeta, updateValue)
             {
@@ -36,7 +47,7 @@ const columnsDefinition: MUIDataTableColumn[] = [
         }
     },
     {
-        name: "id",
+        name: "actions",
         label: "Ação",
         options: {
             customBodyRender(value, tableMeta, updateValue)
