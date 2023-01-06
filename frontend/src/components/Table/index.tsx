@@ -4,17 +4,24 @@ import MUIDataTable, {MUIDataTableColumn, MUIDataTableOptions, MUIDataTableProps
 import {merge, omit, cloneDeep} from "lodash";
 import {MuiThemeProvider, Theme, useTheme} from "@material-ui/core";
 
+interface TableProps extends MUIDataTableProps {
+    columns: TableColumn[];
+    loading?: boolean;
+}
+
 export interface TableColumn extends MUIDataTableColumn {
     width?: string;
 
 }
+
+const LABEL_NO_MATCH = "Nenhum registro encontrado"
 
 const defaultOtions: MUIDataTableOptions = {
     print: false,
     download: false,
     textLabels: {
         body: {
-            noMatch: "Nenhum registro encontrado",
+            noMatch: LABEL_NO_MATCH,
             toolTip: "Classificar"
         },
         pagination: {
@@ -47,10 +54,6 @@ const defaultOtions: MUIDataTableOptions = {
     }
 }
 
-interface TableProps extends MUIDataTableProps {
-    columns: TableColumn[];
-}
-
 const Table : React.FC<TableProps>  = (props) => {
 
     function extractMuiDataTableColumns(columns: TableColumn[]): MUIDataTableColumn[] {
@@ -69,6 +72,15 @@ const Table : React.FC<TableProps>  = (props) => {
         })
     }
 
+    function applyLoading() {
+        const textLabels = (newProps.options as any).textLabels
+        textLabels.body.noMatch = (newProps.loading === true) ? 'Carregando...' : LABEL_NO_MATCH;
+    }
+
+    function getOriginalMuiDataTableProps() {
+        return omit(newProps, 'loading');
+    }
+
     const theme = cloneDeep<Theme>(useTheme());
     const newProps = merge(
         {options: defaultOtions},
@@ -76,9 +88,13 @@ const Table : React.FC<TableProps>  = (props) => {
         {columns: extractMuiDataTableColumns(props.columns)}
     )
 
+    applyLoading()
+
+    const originalProps = getOriginalMuiDataTableProps();
+
     return (
         <MuiThemeProvider theme={theme}>
-            <MUIDataTable {...newProps} />
+            <MUIDataTable {...originalProps} />
         </MuiThemeProvider>
     );
 };

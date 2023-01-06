@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {MUIDataTableColumn} from "mui-datatables";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import categoryHttp from "../../util/http/category-http";
@@ -9,6 +8,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import {Link} from "react-router-dom";
 import {Category, ListResponse} from "../../util/models";
 import DefaultTable, {TableColumn} from "../../components/Table"
+import {useSnackbar} from "notistack";
 
 const columnsDefinition: TableColumn[] = [
     {
@@ -67,16 +67,29 @@ type Props = {
 };
 const Table = (props: Props) => {
 
+    const snackbar = useSnackbar();
     const [data, setData] = useState<Category[]>([]);
+    const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
         let isActiveComponent = true;
         (async () => {
-            const {data} = await categoryHttp.list<ListResponse<Category>>();
-            if (isActiveComponent) {
-                console.log(data.data[0])
-                setData(data.data);
+            setLoading(true);
+            try {
+                const {data} = await categoryHttp.list<ListResponse<Category>>();
+                if (isActiveComponent) {
+                    setData(data.data);
+                }
+            } catch (error) {
+                console.error(error);
+                snackbar.enqueueSnackbar(
+                    'Não foi possível carragar as informações',
+                    {variant: 'error'}
+                )
+            } finally {
+                setLoading(false);
             }
+
             return () => {
                 isActiveComponent = false;
             }
@@ -88,6 +101,7 @@ const Table = (props: Props) => {
             title={"Minha tabela"}
             columns={columnsDefinition}
             data={data}
+            loading={loading}
         />
     );
 };
