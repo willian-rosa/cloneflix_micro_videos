@@ -2,7 +2,7 @@
 import * as React from 'react';
 import MUIDataTable, {MUIDataTableColumn, MUIDataTableOptions, MUIDataTableProps} from "mui-datatables";
 import {merge, omit, cloneDeep} from "lodash";
-import {MuiThemeProvider, Theme, useTheme} from "@material-ui/core";
+import {MuiThemeProvider, Theme, useMediaQuery, useTheme} from "@material-ui/core";
 
 interface TableProps extends MUIDataTableProps {
     columns: TableColumn[];
@@ -77,18 +77,28 @@ const Table : React.FC<TableProps>  = (props) => {
         textLabels.body.noMatch = (newProps.loading === true) ? 'Carregando...' : LABEL_NO_MATCH;
     }
 
+    function applyResponsive() {
+        newProps.options.responsive = (isSmOrDown) ? 'standard' : 'vertical';
+    }
+
     function getOriginalMuiDataTableProps() {
         return omit(newProps, 'loading');
     }
 
     const theme = cloneDeep<Theme>(useTheme());
+
+
+    const isSmOrDown = useMediaQuery(theme.breakpoints.down('sm'));
+
+
     const newProps = merge(
         {options: defaultOtions},
         props,
         {columns: extractMuiDataTableColumns(props.columns)}
     )
 
-    applyLoading()
+    applyLoading();
+    applyResponsive();
 
     const originalProps = getOriginalMuiDataTableProps();
 
