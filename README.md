@@ -20,6 +20,7 @@ Lembretes:
 - Criar model `php artisan make:model Models/Genre --all`
 - Criar uma seeder `php artisan make:seeder GenresTableSeeder`
 - Criar uma resource `php artisan make:resource CastMember`
+- Criar um filtro `php artisan model:filter CategoryFilter`
 
 Relacionamento 
 - Criar model `php artisan make:migration create_category_genre_table`

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -23,6 +22,11 @@ abstract class BasicCrudController extends Controller
 
     public function index()
     {
+
+
+        return Category::filter(\Request::all())->get();
+
+        dd(\Request::all());
         $data = $this->paginationSize ? $this->model()::paginate($this->paginationSize) : $this->model()::all();
 
         $refClass = new \ReflectionClass($this->resourceCollectionClass());
