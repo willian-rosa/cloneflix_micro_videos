@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import categoryHttp from "../../util/http/category-http";
@@ -10,6 +10,10 @@ import {Category, ListResponse} from "../../util/models";
 import DefaultTable, {makeActionStyle, TableColumn} from "../../components/Table"
 import {useSnackbar} from "notistack";
 import {IconButton, MuiThemeProvider} from "@material-ui/core";
+
+interface SearchState {
+    search?: string;
+}
 
 const columnsDefinition: TableColumn[] = [
     {
@@ -65,41 +69,44 @@ const columnsDefinition: TableColumn[] = [
     }
 ]
 
-
-type Props = {
-
-};
-
-const Table = (props: Props) => {
+const Table = () => {
 
     const snackbar = useSnackbar();
+    const subscribed = useRef(true);
     const [data, setData] = useState<Category[]>([]);
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false);
+    const [searchState, setSearchState] = useState<SearchState>({search: 'asdf'});
 
     useEffect(() => {
-        let isActiveComponent = true;
-        (async () => {
-            setLoading(true);
-            try {
-                const {data} = await categoryHttp.list<ListResponse<Category>>();
-                if (isActiveComponent) {
-                    setData(data.data);
-                }
-            } catch (error) {
-                console.error(error);
-                snackbar.enqueueSnackbar(
-                    'Não foi possível carragar as informações',
-                    {variant: 'error'}
-                )
-            } finally {
-                setLoading(false);
-            }
+        getData();
+        return () => {
+            subscribed.current = false;
+        };
+    }, [searchState]);
 
-            return () => {
-                isActiveComponent = false;
+    async function getData() {
+        setLoading(true);
+        try {
+            const {data} = await categoryHttp.list<ListResponse<Category>>(
+                {
+                    queryParams: {
+                        search: searchState.search
+                    }
+                }
+            );
+            if (subscribed.current) {
+                setData(data.data);
             }
-        })();
-    }, []);
+        } catch (error) {
+            console.error(error);
+            snackbar.enqueueSnackbar(
+                'Não foi possível carragar as informações',
+                {variant: 'error'}
+            )
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <MuiThemeProvider theme={makeActionStyle(columnsDefinition.length - 1)}>
@@ -108,6 +115,10 @@ const Table = (props: Props) => {
                 columns={columnsDefinition}
                 data={data}
                 loading={loading}
+                options={{
+                    searchText: searchState.search,
+                    onSearchChange: (value) => setSearchState({search: value})
+                }}
             />
         </MuiThemeProvider>
     );
