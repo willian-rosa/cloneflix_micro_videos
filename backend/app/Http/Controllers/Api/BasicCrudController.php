@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 abstract class BasicCrudController extends Controller
 {
 
-    protected $paginationSize = 15;
+    protected int $defaultPerPage = 15;
 
     /** @return Model */
     abstract protected function model();
@@ -20,14 +21,22 @@ abstract class BasicCrudController extends Controller
     abstract protected function resource(): string;
     abstract protected function resourceCollectionClass(): string;
 
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = (int)$request->get('per_page', $this->defaultPerPage);
+        $hasFilter = in_array(Filterable::class, class_uses($this->model()));
 
+        $query = $this->queryBuilder();
 
-        return Category::filter(\Request::all())->get();
+        if ($hasFilter) {
+            $query = $query->filter($request->all());
+        }
 
-        dd(\Request::all());
-        $data = $this->paginationSize ? $this->model()::paginate($this->paginationSize) : $this->model()::all();
+        if ($request->has('all') || !$this->defaultPerPage) {
+            $data = $query->get();
+        } else {
+            $data = $query->paginate($perPage);
+        }
 
         $refClass = new \ReflectionClass($this->resourceCollectionClass());
         $resourceCollectionClass = $this->resourceCollectionClass();
@@ -42,7 +51,7 @@ abstract class BasicCrudController extends Controller
     public function store(Request $request)
     {
         $validateData = $this->validate($request, $this->rulesStore());
-        $obj = $this->model()::create($validateData);
+        $obj = $this->queryBuilder()->create($validateData);
         $obj->refresh();
         $resource = $this->resource();
         return new $resource($obj);
@@ -77,6 +86,11 @@ abstract class BasicCrudController extends Controller
     {
         $model = $this->model();
         $keyName = (new $model)->getRouteKeyName();
-        return $model::where($keyName, $id)->firstOrFail();
+        return $this->queryBuilder()->where($keyName, $id)->firstOrFail();
+    }
+
+    protected function queryBuilder(): Builder
+    {
+        return $this->model()::query();
     }
 }

@@ -3,7 +3,6 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BasicCrudController;
-use App\Http\Resources\CategoryResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\Request;
@@ -39,7 +38,25 @@ class BasicCrudControllerTest extends TestCase
         $category = CategoryStub::create(['name' => 'Categoria 1', 'description' => 'Descrição da Categoria']);
         $category->refresh();
 
-        $result = $this->controller->index()->toArray(null);
+        $request = \Mockery::mock(Request::class);
+        $request->shouldReceive('get')->withArgs(['per_page', 15])->andReturn(5);
+        $request->shouldReceive('has')->withArgs(['all'])->andReturn(false);
+
+        $result = $this->controller->index($request)->toArray(null);
+        $this->assertEquals([$category->toArray()], $result);
+    }
+
+    public function testIndexAll()
+    {
+        /** @var CategoryStub $category */
+        $category = CategoryStub::create(['name' => 'Categoria 1', 'description' => 'Descrição da Categoria']);
+        $category->refresh();
+
+        $request = \Mockery::mock(Request::class);
+        $request->shouldReceive('get')->withArgs(['per_page', 15])->andReturn(5);
+        $request->shouldReceive('has')->withArgs(['all'])->andReturn(true);
+
+        $result = $this->controller->index($request)->toArray(null);
         $this->assertEquals([$category->toArray()], $result);
     }
 
