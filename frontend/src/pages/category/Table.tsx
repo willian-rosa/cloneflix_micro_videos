@@ -7,8 +7,9 @@ import {BadgeNo, BadgeYes} from "../../components/Badge";
 import EditIcon from '@material-ui/icons/Edit';
 import {Link} from "react-router-dom";
 import {Category, ListResponse} from "../../util/models";
-import DefaultTable, {TableColumn} from "../../components/Table"
+import DefaultTable, {makeActionStyle, TableColumn} from "../../components/Table"
 import {useSnackbar} from "notistack";
+import {IconButton, MuiThemeProvider} from "@material-ui/core";
 
 const columnsDefinition: TableColumn[] = [
     {
@@ -52,9 +53,12 @@ const columnsDefinition: TableColumn[] = [
         options: {
             customBodyRender(value, tableMeta, updateValue)
             {
-                return <Link to={`categories/${value}/edit`} >
+                return <IconButton
+                        color={'secondary'}
+                        component={Link}
+                        to={`categories/${tableMeta.rowData[0]}/edit`} >
                     <EditIcon/>
-                </Link>
+                </IconButton>
 
             }
         }
@@ -65,6 +69,7 @@ const columnsDefinition: TableColumn[] = [
 type Props = {
 
 };
+
 const Table = (props: Props) => {
 
     const snackbar = useSnackbar();
@@ -97,12 +102,14 @@ const Table = (props: Props) => {
     }, []);
 
     return (
-        <DefaultTable
-            title={"Minha tabela"}
-            columns={columnsDefinition}
-            data={data}
-            loading={loading}
-        />
+        <MuiThemeProvider theme={makeActionStyle(columnsDefinition.length - 1)}>
+            <DefaultTable
+                title={"Minha tabela"}
+                columns={columnsDefinition}
+                data={data}
+                loading={loading}
+            />
+        </MuiThemeProvider>
     );
 };
 
