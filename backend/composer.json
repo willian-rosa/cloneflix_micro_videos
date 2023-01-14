@@ -12,6 +12,7 @@
         "barryvdh/laravel-cors": "^0.11",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
+        "laravel/helpers": "^1.6",
         "laravel/tinker": "^2.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "tucker-eric/eloquentfilter": "^3.1"
