@@ -8,7 +8,6 @@ import genreHttp from "../../util/http/genre-http";
 import * as yup from "../../util/vendor/yup";
 import {useSnackbar} from "notistack";
 import {useHistory, useParams} from "react-router";
-import castMemberHttp from "../../util/http/cast-member-http";
 
 const useStyles = makeStyles((theme: Theme) => {
     return {
@@ -51,7 +50,7 @@ export const Form = () => {
 
     useEffect(() => {
         categoryHttp
-            .list()
+            .list({queryParams: {all: ''}})
             .then(({data}) => setCategories(data.data))
     }, [])
 
