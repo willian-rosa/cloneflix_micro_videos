@@ -170,7 +170,7 @@ const Table = () => {
     return (
         <MuiThemeProvider theme={makeActionStyle(columnsDefinition.length - 1)}>
             <DefaultTable
-                title={"Minha tabela"}
+                title={""}
                 columns={columns}
                 data={data}
                 loading={loading}
