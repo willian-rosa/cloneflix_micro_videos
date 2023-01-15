@@ -17,9 +17,15 @@ interface Pagination {
     per_page: number;
 }
 
+interface Order {
+    sort: string | null;
+    dir: string | null;
+}
+
 interface SearchState {
     search?: string;
-    pagination: Pagination
+    pagination: Pagination;
+    order: Order
 }
 
 const columnsDefinition: TableColumn[] = [
@@ -62,6 +68,7 @@ const columnsDefinition: TableColumn[] = [
         name: "actions",
         label: "Ação",
         options: {
+            sort: false,
             customBodyRender(value, tableMeta, updateValue)
             {
                 return <IconButton
@@ -87,8 +94,25 @@ const Table = () => {
         pagination: {
             page: 1,
             total: 0,
-            per_page: 5
+            per_page: 10
+        },
+        order: {
+            sort: null,
+            dir: null,
         }
+    });
+
+    const columns = columnsDefinition.map(column => {
+        if (column.name !== searchState.order.sort) {
+            return column;
+        }
+        return {
+            ...column,
+            options: {
+                ...column.options,
+                sortDirection: searchState.order.dir as any
+            }
+        };
     });
 
     useEffect(() => {
@@ -100,7 +124,8 @@ const Table = () => {
     }, [
         searchState.search,
         searchState.pagination.page,
-        searchState.pagination.per_page
+        searchState.pagination.per_page,
+        searchState.order
     ]);
 
     async function getData() {
@@ -111,7 +136,9 @@ const Table = () => {
                     queryParams: {
                         search: searchState.search,
                         page: searchState.pagination.page,
-                        per_page: searchState.pagination.per_page
+                        per_page: searchState.pagination.per_page,
+                        sort: searchState.order.sort,
+                        dir: searchState.order.dir
                     }
                 }
             );
@@ -140,7 +167,7 @@ const Table = () => {
         <MuiThemeProvider theme={makeActionStyle(columnsDefinition.length - 1)}>
             <DefaultTable
                 title={"Minha tabela"}
-                columns={columnsDefinition}
+                columns={columns}
                 data={data}
                 loading={loading}
                 options={{
@@ -166,6 +193,13 @@ const Table = () => {
                         pagination: {
                             ...prevState.pagination,
                             per_page: per_page
+                        }
+                    }))),
+                    onColumnSortChange: (changedColumn: string, direction: 'asc' | 'desc') => setSearchState((prevState => ({
+                        ...prevState,
+                        order: {
+                            sort: changedColumn,
+                            dir: direction
                         }
                     })))
                 }}
