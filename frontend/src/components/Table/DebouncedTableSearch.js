@@ -30,11 +30,11 @@ const useStyles = makeStyles(
     { name: 'MUIDataTableSearch' },
 );
 
-const DebouncedTableSearch = ({ options, searchText, onSearch, onHide }) => {
+const DebouncedTableSearch = ({ options, searchText, onSearch, onHide, debouncedTime }) => {
 
     const classes = useStyles();
     const [text, setText] = useState(searchText);
-    const dispatchOnSearchDebounce = useMemo(() => debounce(dispatchOnSearch, 700), []);
+    const dispatchOnSearchDebounce = useMemo(() => debounce(dispatchOnSearch, debouncedTime), []);
 
     const handleTextChange = event => {
         setText(event.target.value);
@@ -45,7 +45,6 @@ const DebouncedTableSearch = ({ options, searchText, onSearch, onHide }) => {
     }, [text])
 
     function dispatchOnSearch(value) {
-        console.log('dispatchOnSearch', value);
         onSearch(value);
     }
 

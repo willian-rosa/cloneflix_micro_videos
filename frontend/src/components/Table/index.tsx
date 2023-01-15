@@ -8,6 +8,7 @@ import DebouncedTableSearch from "./DebouncedTableSearch";
 interface TableProps extends MUIDataTableProps {
     columns: TableColumn[];
     loading?: boolean;
+    debouncedSearchTime?: number;
 }
 
 export interface TableColumn extends MUIDataTableColumn {
@@ -17,7 +18,7 @@ export interface TableColumn extends MUIDataTableColumn {
 
 const LABEL_NO_MATCH = "Nenhum registro encontrado"
 
-const defaultOtions: MUIDataTableOptions = {
+const makeDefaultOtions = (debouncedSearchTime?): MUIDataTableOptions => ({
     print: false,
     download: false,
     textLabels: {
@@ -61,9 +62,11 @@ const defaultOtions: MUIDataTableOptions = {
             searchText={searchText}
             onSearch={handleSearch}
             onHide={hideSearch}
-            options={options} />
+            options={options}
+            debouncedTime={debouncedSearchTime}
+        />
     }
-}
+});
 
 const Table : React.FC<TableProps>  = (props) => {
 
@@ -101,6 +104,7 @@ const Table : React.FC<TableProps>  = (props) => {
 
     const isSmOrDown = useMediaQuery(theme.breakpoints.down('sm'));
 
+    const defaultOtions = makeDefaultOtions(props.debouncedSearchTime);
 
     const newProps = merge(
         {options: defaultOtions},
