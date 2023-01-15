@@ -3,6 +3,7 @@ import * as React from 'react';
 import MUIDataTable, {MUIDataTableColumn, MUIDataTableOptions, MUIDataTableProps} from "mui-datatables";
 import {merge, omit, cloneDeep} from "lodash";
 import {MuiThemeProvider, Theme, useMediaQuery, useTheme} from "@material-ui/core";
+import DebouncedTableSearch from "./DebouncedTableSearch";
 
 interface TableProps extends MUIDataTableProps {
     columns: TableColumn[];
@@ -51,6 +52,16 @@ const defaultOtions: MUIDataTableOptions = {
             delete: "Excluir",
             deleteAria: "Excluir registros selecionados"
         }
+    },
+    customSearchRender: (searchText: string,
+                         handleSearch: (text: string) => void,
+                         hideSearch: () => void,
+                         options: any) => {
+        return <DebouncedTableSearch
+            searchText={searchText}
+            onSearch={handleSearch}
+            onHide={hideSearch}
+            options={options} />
     }
 }
 
