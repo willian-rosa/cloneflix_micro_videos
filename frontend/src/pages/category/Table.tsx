@@ -11,23 +11,23 @@ import DefaultTable, {makeActionStyle, TableColumn} from "../../components/Table
 import {useSnackbar} from "notistack";
 import {IconButton, MuiThemeProvider} from "@material-ui/core";
 import {FilterResetButton} from "../../components/Table/FilterResetButton";
+import reducer, {INITIAL_STATE, Creators} from "../../store/search";
 
-interface Pagination {
-    page: number;
-    total: number;
-    per_page: number;
-}
-
-interface Order {
-    sort: string | null;
-    dir: string | null;
-}
-
-interface SearchState {
-    search?: string;
-    pagination: Pagination;
-    order: Order
-}
+// interface Pagination {
+//     page: number;
+//     total: number;
+//     per_page: number;
+// }
+//
+// interface Order {
+//     sort: string | null;
+//     dir: string | null;
+// }
+// interface SearchState {
+//     search?: string;
+//     pagination: Pagination;
+//     order: Order
+// }
 
 const columnsDefinition: TableColumn[] = [
     {
@@ -83,66 +83,6 @@ const columnsDefinition: TableColumn[] = [
         }
     }
 ]
-
-const INITIAL_STATE = {
-    search: '',
-    pagination: {
-        page: 1,
-        total: 0,
-        per_page: 10
-    },
-    order: {
-        sort: null,
-        dir: null,
-    }
-};
-
-function reducer(state, action) {
-    switch (action.type) {
-        case 'search':
-            return {
-                ...state,
-                search: action.value ? action.value : '',
-                pagination: {
-                    ...state.pagination,
-                    page: 1
-                }
-            }
-            break;
-        case 'page':
-            return {
-                ...state,
-                pagination: {
-                    ...state.pagination,
-                    page: action.page
-                }
-            }
-            break;
-        case 'per_page':
-            return {
-                ...state,
-                pagination: {
-                    ...state.pagination,
-                    per_page: action.per_page
-                }
-            }
-            break;
-        case 'order':
-            return {
-                ...state,
-                order: {
-                    sort: action.changedColumn,
-                    dir: action.direction
-                }
-            }
-            break;
-        case 'reset':
-        default:
-            return INITIAL_STATE;
-            break;
-    }
-}
-
 
 const Table = () => {
     const snackbar = useSnackbar();
@@ -233,21 +173,20 @@ const Table = () => {
                 debouncedSearchTime={700}
                 options={{
                     serverSide: true,
-                    searchText: searchState.search,
+                    searchText: searchState.search as any,
                     page: searchState.pagination.page - 1,
                     rowsPerPage: searchState.pagination.per_page,
                     count: searchState.pagination.total,
-                    customToolbar: () => (
-                        <FilterResetButton handleClick={() => dispatch({type: 'reset'})} />
-                    ),
-                    onSearchChange: (value) => dispatch({type: 'search', search: value}),
-                    onChangePage: (page) => dispatch({type: 'page', page: page + 1}),
-                    onChangeRowsPerPage: (per_page) => dispatch({type: 'per_page', per_page: per_page}),
-                    onColumnSortChange: (changedColumn: string, direction: 'asc' | 'desc') => dispatch({
-                        type: 'order',
+                    // customToolbar: () => (
+                    //     <FilterResetButton handleClick={() => dispatch({type: 'reset'})} />
+                    // ),
+                    onSearchChange: (value) => dispatch(Creators.setSearch({search: value})),
+                    onChangePage: (page) => dispatch(Creators.setPage({page: page + 1})),
+                    onChangeRowsPerPage: (per_page) => dispatch(Creators.setPerPage({per_page: per_page})),
+                    onColumnSortChange: (changedColumn: string, direction: 'asc' | 'desc') => dispatch(Creators.setOrder({
                         sort: changedColumn,
                         dir: direction
-                    })
+                    }))
                 }}
             />
         </MuiThemeProvider>
