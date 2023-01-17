@@ -11,23 +11,7 @@ import DefaultTable, {makeActionStyle, TableColumn} from "../../components/Table
 import {useSnackbar} from "notistack";
 import {IconButton, MuiThemeProvider} from "@material-ui/core";
 import {FilterResetButton} from "../../components/Table/FilterResetButton";
-import reducer, {INITIAL_STATE, Creators} from "../../store/search";
-
-// interface Pagination {
-//     page: number;
-//     total: number;
-//     per_page: number;
-// }
-//
-// interface Order {
-//     sort: string | null;
-//     dir: string | null;
-// }
-// interface SearchState {
-//     search?: string;
-//     pagination: Pagination;
-//     order: Order
-// }
+import reducer, {INITIAL_STATE, Creators} from "../../store/filter";
 
 const columnsDefinition: TableColumn[] = [
     {
@@ -89,18 +73,18 @@ const Table = () => {
     const subscribed = useRef(true);
     const [data, setData] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [searchState, dispatch] = useReducer(reducer, INITIAL_STATE);
+    const [filterState, dispatch] = useReducer(reducer, INITIAL_STATE);
     const [totalRecords, setTotalRecords] = useState<number>(0)
 
     const columns = columnsDefinition.map(column => {
-        if (column.name !== searchState.order.sort) {
+        if (column.name !== filterState.order.sort) {
             return column;
         }
         return {
             ...column,
             options: {
                 ...column.options,
-                sortDirection: searchState.order.dir as any
+                sortDirection: filterState.order.dir as any
             }
         };
     });
@@ -112,10 +96,10 @@ const Table = () => {
             subscribed.current = false;
         };
     }, [
-        searchState.search,
-        searchState.pagination.page,
-        searchState.pagination.per_page,
-        searchState.order
+        filterState.search,
+        filterState.pagination.page,
+        filterState.pagination.per_page,
+        filterState.order
     ]);
 
     async function getData() {
@@ -124,11 +108,11 @@ const Table = () => {
             const {data} = await categoryHttp.list<ListResponse<Category>>(
                 {
                     queryParams: {
-                        search: cleanSearchText(searchState.search),
-                        page: searchState.pagination.page,
-                        per_page: searchState.pagination.per_page,
-                        sort: searchState.order.sort,
-                        dir: searchState.order.dir
+                        search: cleanSearchText(filterState.search),
+                        page: filterState.pagination.page,
+                        per_page: filterState.pagination.per_page,
+                        sort: filterState.order.sort,
+                        dir: filterState.order.dir
                     }
                 }
             );
@@ -168,9 +152,9 @@ const Table = () => {
                 debouncedSearchTime={700}
                 options={{
                     serverSide: true,
-                    searchText: searchState.search as any,
-                    page: searchState.pagination.page - 1,
-                    rowsPerPage: searchState.pagination.per_page,
+                    searchText: filterState.search as any,
+                    page: filterState.pagination.page - 1,
+                    rowsPerPage: filterState.pagination.per_page,
                     count: totalRecords,
                     customToolbar: () => (
                         <FilterResetButton handleClick={() => dispatch(Creators.setReset())} />
