@@ -92,7 +92,7 @@ const Table : React.FC<TableProps>  = (props) => {
     }
 
     function applyResponsive() {
-        newProps.options.responsive = (isSmOrDown) ? 'standard' : 'vertical';
+        // newProps.options.responsive = (isSmOrDown) ? 'stacked' : 'scrollMaxHeight';
     }
 
     function getOriginalMuiDataTableProps() {

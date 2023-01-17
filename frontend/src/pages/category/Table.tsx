@@ -90,6 +90,7 @@ const Table = () => {
     const [data, setData] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [searchState, dispatch] = useReducer(reducer, INITIAL_STATE);
+    const [totalRecords, setTotalRecords] = useState<number>(0)
 
     const columns = columnsDefinition.map(column => {
         if (column.name !== searchState.order.sort) {
@@ -133,13 +134,7 @@ const Table = () => {
             );
             if (subscribed.current) {
                 setData(data.data);
-                // setSearchState((prevState => ({
-                //     ...prevState,
-                //     pagination: {
-                //         ...prevState.pagination,
-                //         total: data.meta.total
-                //     }
-                // })));
+                setTotalRecords(data.meta.total);
             }
         } catch (error) {
             console.error(error);
@@ -176,16 +171,16 @@ const Table = () => {
                     searchText: searchState.search as any,
                     page: searchState.pagination.page - 1,
                     rowsPerPage: searchState.pagination.per_page,
-                    count: searchState.pagination.total,
-                    // customToolbar: () => (
-                    //     <FilterResetButton handleClick={() => dispatch({type: 'reset'})} />
-                    // ),
+                    count: totalRecords,
+                    customToolbar: () => (
+                        <FilterResetButton handleClick={() => dispatch(Creators.setReset())} />
+                    ),
                     onSearchChange: (value) => dispatch(Creators.setSearch({search: value})),
                     onChangePage: (page) => dispatch(Creators.setPage({page: page + 1})),
                     onChangeRowsPerPage: (per_page) => dispatch(Creators.setPerPage({per_page: per_page})),
-                    onColumnSortChange: (changedColumn: string, direction: 'asc' | 'desc') => dispatch(Creators.setOrder({
+                    onColumnSortChange: (changedColumn: string, direction: string) => dispatch(Creators.setOrder({
                         sort: changedColumn,
-                        dir: direction
+                        dir: direction.includes('desc') ? 'desc' : 'asc'
                     }))
                 }}
             />
