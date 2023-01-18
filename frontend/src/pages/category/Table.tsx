@@ -12,6 +12,7 @@ import {useSnackbar} from "notistack";
 import {IconButton, MuiThemeProvider} from "@material-ui/core";
 import {FilterResetButton} from "../../components/Table/FilterResetButton";
 import reducer, {INITIAL_STATE, Creators} from "../../store/filter";
+import useFilter from "../../hooks/useFilter";
 
 const columnsDefinition: TableColumn[] = [
     {
@@ -73,8 +74,7 @@ const Table = () => {
     const subscribed = useRef(true);
     const [data, setData] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [filterState, dispatch] = useReducer(reducer, INITIAL_STATE);
-    const [totalRecords, setTotalRecords] = useState<number>(0)
+    const {filterState, dispatch, totalRecords, setTotalRecords} = useFilter();
 
     const columns = columnsDefinition.map(column => {
         if (column.name !== filterState.order.sort) {

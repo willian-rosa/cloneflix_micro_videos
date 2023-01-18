@@ -50,7 +50,15 @@ const theme = createTheme({
                 }
             }
         },
+        MuiTableCell: {
+            head: {
+                color: '#ffffff'
+            }
+        },
         MUIDataTableHeadCell: {
+            fixedHeaderCommon: {
+                backgroundColor: (palette!.primary as SimplePaletteColorOptions).main
+            },
             fixedHeader: {
                 paddingTop: 8,
                 paddingBottom: 8,
@@ -60,6 +68,7 @@ const theme = createTheme({
                     backgroundColor: "#459ac4"
                 }
             },
+
             sortAction: {
                 color: "#ffffff"
             },
@@ -75,7 +84,7 @@ const theme = createTheme({
         MUIDataTableSelectCell: {
             headerCell: {
                 backgroundColor: (palette!.primary as SimplePaletteColorOptions).main,
-                "& span": {
+                '& svg': {
                     color: "#fff"
                 }
             }
