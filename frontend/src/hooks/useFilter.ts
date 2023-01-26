@@ -2,6 +2,7 @@ import {Dispatch, Reducer, useReducer, useState} from "react";
 import reducer, {Creators, INITIAL_STATE} from "../store/filter";
 import {Actions as FilterActions, State as FilterState} from "../store/filter/types";
 import {MUIDataTableColumn} from "mui-datatables";
+import {useDebounce} from 'use-debounce'
 
 interface FilterManagerOtptions {
     columns: MUIDataTableColumn[];
@@ -12,9 +13,11 @@ interface FilterManagerOtptions {
 
 export default function useFilter(options: FilterManagerOtptions) {
     const filterManager = new FilterManager(options);
-
+    // Pega o state da URL
     const [filterState, dispatch] = useReducer<Reducer<FilterState, FilterActions>>(reducer, INITIAL_STATE);
-    const [totalRecords, setTotalRecords] = useState<number>(0)
+    const [debouncedFilterState] = useDebounce(filterState, options.debounceTime);
+    const [totalRecords, setTotalRecords] = useState<number>(0);
+
 
     filterManager.state = filterState;
     filterManager.dispatch = dispatch;
@@ -25,6 +28,7 @@ export default function useFilter(options: FilterManagerOtptions) {
         columns: filterManager.columns,
         filterManager,
         filterState,
+        debouncedFilterState,
         dispatch,
         totalRecords,
         setTotalRecords
@@ -37,13 +41,11 @@ export class FilterManager {
     columns: MUIDataTableColumn[];
     rowsPerPage: number;
     rowsPerPageOptions: number[];
-    debounceTime: number;
 
     constructor(options: FilterManagerOtptions) {
         this.columns = options.columns;
         this.rowsPerPage = options.rowsPerPage;
         this.rowsPerPageOptions = options.rowsPerPageOptions;
-        this.debounceTime = options.debounceTime;
     }
 
     changeSearch (value) {
@@ -78,6 +80,14 @@ export class FilterManager {
                 }
             };
         });
+    }
+
+    cleanSearchText(text) {
+        let newText = text;
+        if (text && text.value !== undefined) {
+            newText = text.value;
+        }
+        return newText;
     }
 
 }
