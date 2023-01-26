@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useReducer, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import categoryHttp from "../../util/http/category-http";
@@ -11,7 +11,7 @@ import DefaultTable, {makeActionStyle, TableColumn} from "../../components/Table
 import {useSnackbar} from "notistack";
 import {IconButton, MuiThemeProvider} from "@material-ui/core";
 import {FilterResetButton} from "../../components/Table/FilterResetButton";
-import reducer, {INITIAL_STATE, Creators} from "../../store/filter";
+import {Creators} from "../../store/filter";
 import useFilter from "../../hooks/useFilter";
 
 const columnsDefinition: TableColumn[] = [

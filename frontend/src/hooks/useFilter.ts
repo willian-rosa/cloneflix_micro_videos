@@ -3,16 +3,25 @@ import reducer, {Creators, INITIAL_STATE} from "../store/filter";
 import {Actions as FilterActions, State as FilterState} from "../store/filter/types";
 import {MUIDataTableColumn} from "mui-datatables";
 import {useDebounce} from 'use-debounce'
+import {useHistory} from "react-router";
+import {History} from 'history';
 
 interface FilterManagerOtptions {
     columns: MUIDataTableColumn[];
     rowsPerPage: number;
     rowsPerPageOptions: number[];
     debounceTime: number;
+    history: History;
 }
 
-export default function useFilter(options: FilterManagerOtptions) {
-    const filterManager = new FilterManager(options);
+interface UseFilterOptions extends Omit<FilterManagerOtptions, 'history'> {
+
+}
+
+export default function useFilter(options: UseFilterOptions) {
+    const history = useHistory();
+
+    const filterManager = new FilterManager({...options, history});
     // Pega o state da URL
     const [filterState, dispatch] = useReducer<Reducer<FilterState, FilterActions>>(reducer, INITIAL_STATE);
     const [debouncedFilterState] = useDebounce(filterState, options.debounceTime);
@@ -41,11 +50,13 @@ export class FilterManager {
     columns: MUIDataTableColumn[];
     rowsPerPage: number;
     rowsPerPageOptions: number[];
+    history: History;
 
     constructor(options: FilterManagerOtptions) {
         this.columns = options.columns;
         this.rowsPerPage = options.rowsPerPage;
         this.rowsPerPageOptions = options.rowsPerPageOptions;
+        this.history = options.history;
     }
 
     changeSearch (value) {
@@ -88,6 +99,15 @@ export class FilterManager {
             newText = text.value;
         }
         return newText;
+    }
+
+    pushHistory() {
+        const newLocation = {
+            pathname: '',
+            search: '',
+            state: ''
+        };
+        this.history.push(newLocation);
     }
 
 }
